@@ -11,15 +11,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: print Message
+        run: |
+          echo '💬 New comment on [${{ github.event.discussion.title }}](${{ github.event.discussion.html_url }}) \nby[${{ github.event.discussion.user.login }}](${{ github.event.discussion.user.html_url }}) \n\n${{ github.event.discussion.body }}"'
       - name: Send Discussion Create Notification to Telegram
         run: |
           curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
                -H "Content-Type: application/json" \
-               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "💬 New comment on [${{ env.DISCUSSION_TITLE }}](${{ env.DISCUSSION_URL }}) \nby[${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.DISCUSSION_BODY }}"}'
+               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "💬 New comment on [${{ github.event.discussion.title }}](${{ github.event.discussion.html_url }}) \nby[${{ github.event.discussion.user.login }}](${{ github.event.discussion.user.html_url }}) \n\n${{ github.event.discussion.body }}"}'
         shell: bash
-        env:
-          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
-          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
-          DISCUSSION_BODY: ${{ github.event.discussion.body }}
-          USER_URL: ${{ github.event.discussion.user.html_url }}
-          USER_NAME: ${{ github.event.discussion.user.login }}
