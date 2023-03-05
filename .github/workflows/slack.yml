@@ -18,15 +18,16 @@ jobs:
           escaped_string=${string//./\\.}
           echo ${escaped_string}
           echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
-      - name: Send Discussion Create Notification to Telegram
-        run: |
-          curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
-               -H "Content-Type: application/json" \
-               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.message.outputs.MESSAGE_BODY }}"'
-        shell: bash
         env:
           DISCUSSION_URL: ${{ github.event.discussion.html_url }}
           DISCUSSION_TITLE: ${{ github.event.discussion.title }}
           DISCUSSION_BODY: ${{ github.event.discussion.body }}
           USER_URL: ${{ github.event.discussion.user.html_url }}
           USER_NAME: ${{ github.event.discussion.user.login }}
+      - name: Send Discussion Create Notification to Telegram
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
+               -H "Content-Type: application/json" \
+               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.message.outputs.MESSAGE_BODY }}"'
+        shell: bash
+
