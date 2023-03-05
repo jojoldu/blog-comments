@@ -6,13 +6,19 @@ on:
   discussion_comment:
     types: [created]
 
+
 jobs:
-  notify-github-discussions:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ostk0069/github-discussions-notifier@v0.0.2
-        with:
-          SLACK_CHANNEL_ID: ${{secrets.SLACK_CHANNEL_ID}}
-          SLACK_BOT_TOKEN: ${{secrets.SLACK_BOT_TOKEN}}
-          send-discussion-create: true
-          send-discussion-comment: true
+  using: "composite"
+  steps:
+    - name: Send Discussion Create Notification to Telegram
+      run: |
+        curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
+             -H "Content-Type: application/json" \
+             -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "💬 New comment on [${{ env.DISCUSSION_TITLE }}](${{ env.DISCUSSION_URL }}) \nby[${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.DISCUSSION_BODY }}"}'
+      shell: bash
+      env:
+        DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+        DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+        DISCUSSION_BODY: ${{ github.event.discussion.body }}
+        USER_URL: ${{ github.event.discussion.user.html_url }}
+        USER_NAME: ${{ github.event.discussion.user.login }}
