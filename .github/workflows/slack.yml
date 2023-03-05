@@ -14,8 +14,9 @@ jobs:
       - name: print Message
         id: message
         run: |
-          string='💬 New comment on [${{ github.event.discussion.title }}](${{ github.event.discussion.html_url }}) \nby[${{ github.event.discussion.user.login }}](${{ github.event.discussion.user.html_url }}) \n\n${{ github.event.discussion.body }}"'
+          string='💬 New comment on [${{ env.DISCUSSION_TITLE }}](${{ env.DISCUSSION_URL }}) \nby[@${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.DISCUSSION_BODY }}"'
           escaped_string=${string//./\\.}
+          echo ${escaped_string}
           echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
       - name: Send Discussion Create Notification to Telegram
         run: |
@@ -23,3 +24,9 @@ jobs:
                -H "Content-Type: application/json" \
                -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.message.outputs.MESSAGE_BODY }}"'
         shell: bash
+        env:
+          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_BODY: ${{ github.event.discussion.body }}
+          USER_URL: ${{ github.event.discussion.user.html_url }}
+          USER_NAME: ${{ github.event.discussion.user.login }}
