@@ -11,11 +11,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: print Message
+      - name: create Message
         id: message
         run: |
           string='💬 New comment on [${{ env.DISCUSSION_TITLE }}](${{ env.DISCUSSION_URL }}) \nby[@${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.DISCUSSION_BODY }}"'
-          escaped_string=${string//./\\.}
+          escaped_string=${string//./\\\\.}
           echo ${escaped_string}
           echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
         env:
