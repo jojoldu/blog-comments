@@ -29,7 +29,7 @@ jobs:
         run: |
           curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
                -H "Content-Type: application/json" \
-               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.create-message.outputs.MESSAGE_BODY }}"'
+               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "disable_web_page_preview": true, "text": "${{ steps.create-message.outputs.MESSAGE_BODY }}"'
         shell: bash
   send-create-comment:
     runs-on: ubuntu-latest
@@ -54,5 +54,5 @@ jobs:
         run: |
           curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
                -H "Content-Type: application/json" \
-               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.create-comment-message.outputs.MESSAGE_BODY }}"'
+               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "disable_web_page_preview": true, "text": "${{ steps.create-comment-message.outputs.MESSAGE_BODY }}"'
         shell: bash
