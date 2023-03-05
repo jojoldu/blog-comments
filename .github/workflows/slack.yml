@@ -12,16 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print Message
+        id: message
         run: |
           string='💬 New comment on [${{ github.event.discussion.title }}](${{ github.event.discussion.html_url }}) \nby[${{ github.event.discussion.user.login }}](${{ github.event.discussion.user.html_url }}) \n\n${{ github.event.discussion.body }}"'
           escaped_string=${string//./\\.}
-          echo ${escaped_string}
-        id: message
-        outputs:
-          message: ${{ steps.echo.outputs.message }}
+          echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
       - name: Send Discussion Create Notification to Telegram
         run: |
           curl -X POST "https://api.telegram.org/bot${{secrets.TELEGRAM_TOKEN}}/sendMessage?parse_mode=MarkdownV2" \
                -H "Content-Type: application/json" \
-               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ job.outputs.message }}"'
+               -d '{"chat_id": "${{secrets.TELEGRAM_CHAT_ID}}", "text": "${{ steps.message.outputs.MESSAGE_BODY }}"'
         shell: bash
