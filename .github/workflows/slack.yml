@@ -8,7 +8,6 @@ on:
 
 
 jobs:
-  using: "composite"
   steps:
     - name: Send Discussion Create Notification to Telegram
       run: |
