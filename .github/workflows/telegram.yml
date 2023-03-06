@@ -16,7 +16,7 @@ jobs:
         id: create-message
         run: |
           string='🐛 New Discussion on [${{ env.DISCUSSION_TITLE }}](${{ env.DISCUSSION_URL }}) \nby[@${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.DISCUSSION_BODY }}"'
-          escaped_string=${string//./\\\\.}
+          escaped_string=$(echo $string | sed 's/\([.!-_]\)/\\\\\1/g')
           echo ${escaped_string}
           echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
         env:
@@ -39,7 +39,7 @@ jobs:
         id: create-comment-message
         run: |
           string='💬 New comment on [${{ env.DISCUSSION_TITLE }}](${{ env.COMMENT_URL }}) \nby[@${{ env.USER_NAME }}](${{ env.USER_URL }}) \n\n${{ env.COMMENT_BODY }}"'
-          escaped_string=${string//./\\\\.}
+          escaped_string=$(echo $string | sed 's/\([.!-_]\)/\\\\\1/g')
           echo ${escaped_string}
           echo "MESSAGE_BODY=${escaped_string}" >> $GITHUB_OUTPUT
         env:
